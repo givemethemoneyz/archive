@@ -1,5 +1,3 @@
-PrecacheParticleSystem("doublejump_smoke")
-
 local function GetMoveVector(mv)
 	local ang = mv:GetAngles()
 
@@ -45,6 +43,18 @@ hook.Add("SetupMove", "Multi Jump", function(ply, mv)
 		return
 	end
 
+	local delay = 2
+	local shouldOccur = true
+
+	local function myFunc()
+		if shouldOccur then
+			shouldOccur = false
+			timer.Simple( delay, function() shouldOccur = true end )
+		else
+			print( "The event is still on cooldown" )
+		end
+	end
+	
 	local vel = GetMoveVector(mv)
 
 	vel.z = ply:GetJumpPower() * ply:GetExtraJumpPower()
@@ -53,7 +63,4 @@ hook.Add("SetupMove", "Multi Jump", function(ply, mv)
 
 	ply:DoCustomAnimEvent(PLAYERANIMEVENT_JUMP , -1)
 
-	for i = 1, 4 do
-		ParticleEffect("doublejump_smoke", ply:GetPos() + Vector(0, 0, 10), ply:GetAngles(), ply)
-	end
 end)
